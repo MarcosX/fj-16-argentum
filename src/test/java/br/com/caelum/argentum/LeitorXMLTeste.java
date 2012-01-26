@@ -1,13 +1,12 @@
 package br.com.caelum.argentum;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.junit.Test;
-
-import com.thoughtworks.xstream.io.StreamException;
 
 public class LeitorXMLTeste {
 
@@ -37,13 +36,13 @@ public class LeitorXMLTeste {
 		List<Negocio> negocios = leitor.carrega(new StringReader(xml));
 	}
 
-	@Test(expected = StreamException.class)
+	@Test
 	public void testaXMLVazio() {
 		String xml = "";
 
 		LeitorXML leitor = new LeitorXML();
-		@SuppressWarnings("unused")
 		List<Negocio> negocios = leitor.carrega(new StringReader(xml));
+		assertEquals(true, negocios.isEmpty());
 	}
 
 	@Test
@@ -53,8 +52,25 @@ public class LeitorXMLTeste {
 				+ "</negocio>" + "</list>";
 
 		LeitorXML leitor = new LeitorXML();
-		@SuppressWarnings("unused")
 		List<Negocio> negocios = leitor.carrega(new StringReader(xml));
 		assertEquals(0.0, negocios.get(0).getPreco(), 0.00001);
+	}
+
+	@Test
+	public void testaListaNegocioParaXML() {
+		LeitorXML leitor = new LeitorXML();
+		Negocio n1 = new Negocio(100, 10, new GregorianCalendar(2008, 0, 1));
+
+		String xml = leitor.listaDeNegocioParaXML(n1);
+		List<Negocio> negocios = leitor.carrega(new StringReader(xml));
+
+		assertEquals(1, negocios.size());
+
+		Negocio n2 = negocios.get(0);
+
+		assertEquals(n1.getPreco(), n2.getPreco(), 0.00001);
+		assertEquals(n1.getQuantidade(), n2.getQuantidade(), 0.00001);
+		assertEquals(n1.getData().getTimeInMillis(), n2.getData()
+				.getTimeInMillis());
 	}
 }

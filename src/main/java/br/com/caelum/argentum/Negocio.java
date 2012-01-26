@@ -3,7 +3,7 @@ package br.com.caelum.argentum;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public final class Negocio {
+public final class Negocio implements Comparable<Negocio> {
 	private final double preco;
 	private final int quantidade;
 	private final Calendar data;
@@ -40,4 +40,21 @@ public final class Negocio {
 				+ ", Data " + sdf.format(this.data.getTime()) + "]";
 	}
 
+	@Override
+	public int compareTo(Negocio o) {
+		Calendar data1 = getData();
+		Calendar data2 = o.getData();
+		if (data1.get(Calendar.DAY_OF_MONTH) == data2
+				.get(Calendar.DAY_OF_MONTH)
+				&& data1.get(Calendar.MONTH) == data2.get(Calendar.MONTH)
+				&& data1.get(Calendar.YEAR) == data2.get(Calendar.YEAR)) {
+			return 0;
+		} else if (data1.get(Calendar.YEAR) > data2.get(Calendar.YEAR)
+				|| data1.get(Calendar.MONTH) > data2.get(Calendar.MONTH)
+				|| data1.get(Calendar.DAY_OF_MONTH) > data2
+						.get(Calendar.DAY_OF_MONTH)) {
+			return 1;
+		}
+		return -1;
+	}
 }

@@ -1,6 +1,8 @@
 package br.com.caelum.argentum;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class CandlestickFactory {
@@ -28,5 +30,33 @@ public class CandlestickFactory {
 		return new Candlestick(abertura, fechamento, minimo, maximo, volume,
 				data);
 
+	}
+
+	public boolean isMesmoDia(Calendar data1, Calendar data2) {
+		return data1.get(Calendar.DAY_OF_MONTH) == data2
+				.get(Calendar.DAY_OF_MONTH)
+				&& data1.get(Calendar.MONTH) == data2.get(Calendar.MONTH)
+				&& data1.get(Calendar.YEAR) == data2.get(Calendar.YEAR);
+	}
+
+	public List<Candlestick> constroiCandles(List<Negocio> negocios) {
+		Collections.sort(negocios);
+
+		List<Candlestick> candles = new ArrayList<Candlestick>();
+		List<Negocio> negociosDoMesmoDia = new ArrayList<Negocio>();
+		Calendar dataTemp = negocios.get(0).getData();
+
+		for (Negocio negocio : negocios) {
+			if (!isMesmoDia(dataTemp, negocio.getData())) {
+				candles.add(constroiCandleParaData(dataTemp, negociosDoMesmoDia));
+				negociosDoMesmoDia.clear();
+				dataTemp = negocio.getData();
+			}
+			negociosDoMesmoDia.add(negocio);
+		}
+
+		candles.add(constroiCandleParaData(dataTemp, negociosDoMesmoDia));
+
+		return candles;
 	}
 }
