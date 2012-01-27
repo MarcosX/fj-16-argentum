@@ -11,7 +11,7 @@ public class TestaCandleSemNegocio {
 		List<Negocio> negocios = Arrays.asList();
 
 		CandlestickFactory fabrica = new CandlestickFactory();
-		Candlestick candle = fabrica.constroiCandleParaData(hoje, negocios);
+		Candle candle = fabrica.constroiCandleParaData(hoje, negocios);
 
 		System.out.println(candle);
 	}

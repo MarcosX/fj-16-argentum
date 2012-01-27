@@ -16,7 +16,7 @@ public class TestaCandlestickFactory {
 		List<Negocio> negocios = Arrays.asList(n1, n2, n3, n4);
 
 		CandlestickFactory fabrica = new CandlestickFactory();
-		Candlestick candle = fabrica.constroiCandleParaData(hoje, negocios);
+		Candle candle = fabrica.constroiCandleParaData(hoje, negocios);
 
 		System.out.println("Lista de negócios:");
 		for (Negocio negocio : negocios) {
@@ -27,7 +27,7 @@ public class TestaCandlestickFactory {
 		System.out.println(candle);
 
 		System.out.println("Gerando candle atraves de builder:");
-		Candlestick candleBuildado = new CandleBuilder().abertura(10)
+		Candle candleBuildado = new CandleBuilder().abertura(10)
 				.fechamento(100).minimo(1).maximo(30).volume(1234)
 				.data(Calendar.getInstance()).gerarCandle();
 		System.out.println(candleBuildado);

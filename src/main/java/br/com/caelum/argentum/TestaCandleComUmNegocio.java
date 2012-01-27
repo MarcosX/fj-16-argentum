@@ -12,7 +12,7 @@ public class TestaCandleComUmNegocio {
 		List<Negocio> negocios = Arrays.asList(n1);
 
 		CandlestickFactory fabrica = new CandlestickFactory();
-		Candlestick candle = fabrica.constroiCandleParaData(hoje, negocios);
+		Candle candle = fabrica.constroiCandleParaData(hoje, negocios);
 
 		System.out.println(candle);
 

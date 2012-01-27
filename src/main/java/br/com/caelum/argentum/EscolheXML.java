@@ -1,14 +1,14 @@
 package br.com.caelum.argentum;
 
 import java.io.FileReader;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class EscolheXML {
-	public void escolher() {
+	public List<Negocio> escolher() {
 		try {
 			JFileChooser fileChooser = new JFileChooser(".");
 			fileChooser.setFileFilter(new FileNameExtensionFilter("Apenas XML",
@@ -17,16 +17,12 @@ public class EscolheXML {
 			if (retorno == JFileChooser.APPROVE_OPTION) {
 				FileReader reader = new FileReader(
 						fileChooser.getSelectedFile());
-				List<Negocio> negocios = new LeitorXML().carrega(reader);
-
-				Negocio primeiroNegocio = negocios.get(0);
-				String msg = "Primeiro negocio do dia: "
-						+ primeiroNegocio.getPreco();
-				JOptionPane.showMessageDialog(null, msg);
+				return new LeitorXML().carrega(reader);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return Collections.emptyList();
 	}
 
 	public static void main(String[] args) {

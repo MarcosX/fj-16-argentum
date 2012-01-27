@@ -6,8 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class CandlestickFactory {
-	public Candlestick constroiCandleParaData(Calendar data,
-			List<Negocio> negocios) {
+	public Candle constroiCandleParaData(Calendar data, List<Negocio> negocios) {
 
 		double abertura = negocios.isEmpty() ? 0 : negocios.get(0).getPreco();
 		double fechamento = negocios.isEmpty() ? 0 : negocios.get(
@@ -27,8 +26,7 @@ public class CandlestickFactory {
 			}
 		}
 
-		return new Candlestick(abertura, fechamento, minimo, maximo, volume,
-				data);
+		return new Candle(abertura, fechamento, minimo, maximo, volume, data);
 
 	}
 
@@ -39,24 +37,29 @@ public class CandlestickFactory {
 				&& data1.get(Calendar.YEAR) == data2.get(Calendar.YEAR);
 	}
 
-	public List<Candlestick> constroiCandles(List<Negocio> negocios) {
+	public List<Candle> constroiCandles(List<Negocio> negocios) {
 		Collections.sort(negocios);
 
-		List<Candlestick> candles = new ArrayList<Candlestick>();
+		List<Candle> candles = new ArrayList<Candle>();
 		List<Negocio> negociosDoMesmoDia = new ArrayList<Negocio>();
 		Calendar dataTemp = negocios.get(0).getData();
 
 		for (Negocio negocio : negocios) {
 			if (!isMesmoDia(dataTemp, negocio.getData())) {
-				candles.add(constroiCandleParaData(dataTemp, negociosDoMesmoDia));
+				fechaCandle(candles, negociosDoMesmoDia, dataTemp);
 				negociosDoMesmoDia.clear();
 				dataTemp = negocio.getData();
 			}
 			negociosDoMesmoDia.add(negocio);
 		}
 
-		candles.add(constroiCandleParaData(dataTemp, negociosDoMesmoDia));
+		fechaCandle(candles, negociosDoMesmoDia, dataTemp);
 
 		return candles;
+	}
+
+	private void fechaCandle(List<Candle> candles,
+			List<Negocio> negociosDoMesmoDia, Calendar dataTemp) {
+		candles.add(constroiCandleParaData(dataTemp, negociosDoMesmoDia));
 	}
 }

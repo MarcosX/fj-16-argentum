@@ -22,7 +22,7 @@ public class CandlestickFactoryTest {
 		List<Negocio> negocios = Arrays.asList(n1, n2, n3, n4);
 
 		CandlestickFactory fabrica = new CandlestickFactory();
-		Candlestick candle = fabrica.constroiCandleParaData(hoje, negocios);
+		Candle candle = fabrica.constroiCandleParaData(hoje, negocios);
 
 		Assert.assertEquals(40.5, candle.getAbertura(), 0.00001);
 		Assert.assertEquals(42.3, candle.getFechamento(), 0.00001);
@@ -38,7 +38,7 @@ public class CandlestickFactoryTest {
 		List<Negocio> negocios = Arrays.asList();
 
 		CandlestickFactory fabrica = new CandlestickFactory();
-		Candlestick candle = fabrica.constroiCandleParaData(hoje, negocios);
+		Candle candle = fabrica.constroiCandleParaData(hoje, negocios);
 
 		Assert.assertEquals(0.0, candle.getAbertura(), 0.00001);
 		Assert.assertEquals(0.0, candle.getFechamento(), 0.00001);
@@ -54,7 +54,7 @@ public class CandlestickFactoryTest {
 		List<Negocio> negocios = Arrays.asList(n1);
 
 		CandlestickFactory fabrica = new CandlestickFactory();
-		Candlestick candle = fabrica.constroiCandleParaData(hoje, negocios);
+		Candle candle = fabrica.constroiCandleParaData(hoje, negocios);
 
 		Assert.assertEquals(40.5, candle.getAbertura(), 0.00001);
 		Assert.assertEquals(40.5, candle.getFechamento(), 0.00001);
@@ -74,7 +74,7 @@ public class CandlestickFactoryTest {
 		List<Negocio> negocios = Arrays.asList(n1, n2, n3, n4);
 
 		CandlestickFactory fabrica = new CandlestickFactory();
-		Candlestick candle = fabrica.constroiCandleParaData(hoje, negocios);
+		Candle candle = fabrica.constroiCandleParaData(hoje, negocios);
 
 		Assert.assertEquals(39.8, candle.getAbertura(), 0.00001);
 		Assert.assertEquals(45.0, candle.getFechamento(), 0.00001);
@@ -94,7 +94,7 @@ public class CandlestickFactoryTest {
 		List<Negocio> negocios = Arrays.asList(n1, n2, n3, n4);
 
 		CandlestickFactory fabrica = new CandlestickFactory();
-		Candlestick candle = fabrica.constroiCandleParaData(hoje, negocios);
+		Candle candle = fabrica.constroiCandleParaData(hoje, negocios);
 
 		Assert.assertEquals(45.0, candle.getAbertura(), 0.00001);
 		Assert.assertEquals(39.8, candle.getFechamento(), 0.00001);
@@ -144,7 +144,7 @@ public class CandlestickFactoryTest {
 
 		CandlestickFactory fabrica = new CandlestickFactory();
 
-		List<Candlestick> candles = fabrica.constroiCandles(negocios);
+		List<Candle> candles = fabrica.constroiCandles(negocios);
 
 		assertEquals(3, candles.size());
 		assertEquals(45.0, candles.get(0).getAbertura(), 0.00001);
@@ -180,7 +180,7 @@ public class CandlestickFactoryTest {
 
 		CandlestickFactory fabrica = new CandlestickFactory();
 
-		List<Candlestick> candles = fabrica.constroiCandles(negocios);
+		List<Candle> candles = fabrica.constroiCandles(negocios);
 
 		assertEquals(3, candles.size());
 		assertEquals(45.0, candles.get(0).getAbertura(), 0.00001);
