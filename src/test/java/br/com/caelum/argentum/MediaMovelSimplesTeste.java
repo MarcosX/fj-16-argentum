@@ -21,7 +21,7 @@ public class MediaMovelSimplesTeste {
 	@Test
 	public void testaExemploSimplesParaMedia() {
 		SerieTemporal serie = criaSerie(1, 2, 3, 4, 3, 4, 5, 4, 3);
-		Indicador mms = new MediaMovelSimples();
+		Indicador mms = new MediaMovelSimples(new IndicadorFechamento(), 3);
 
 		Assert.assertEquals(2.0, mms.calcula(2, serie), 0.00001);
 		Assert.assertEquals(3.0, mms.calcula(3, serie), 0.00001);
@@ -31,4 +31,24 @@ public class MediaMovelSimplesTeste {
 		Assert.assertEquals(13.0 / 3, mms.calcula(7, serie), 0.00001);
 		Assert.assertEquals(4.0, mms.calcula(8, serie), 0.00001);
 	}
+
+	@Test
+	public void testaMediaSimplesDeCincoDias() {
+		SerieTemporal serie = criaSerie(1, 2, 3, 4, 3, 4, 5, 4, 3);
+		Indicador mms = new MediaMovelSimples(new IndicadorFechamento(), 5);
+
+		Assert.assertEquals(13.0 / 5, mms.calcula(4, serie), 0.00001);
+		Assert.assertEquals(16.0 / 5, mms.calcula(5, serie), 0.00001);
+		Assert.assertEquals(19.0 / 5, mms.calcula(6, serie), 0.00001);
+	}
+
+	@Test
+	public void testaMediaSimplesComAcessoInvalido() {
+		SerieTemporal serie = criaSerie(1, 2, 3, 4, 3, 4, 5, 4, 3);
+		MediaMovelSimples mms = new MediaMovelSimples(
+				new IndicadorFechamento(), 5);
+		Assert.assertEquals(6.0 / 3, mms.calcula(2, serie), 0.00001);
+		Assert.assertEquals(10.0 / 4, mms.calcula(3, serie), 0.00001);
+	}
+
 }

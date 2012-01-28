@@ -1,27 +1,41 @@
 package br.com.caelum.argentum;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.text.MaskFormatter;
 
-import br.com.caelum.argentum.ui.NegociosTableModel;
+import br.com.caelum.argentum.grafico.GeradorDeGrafico;
+import br.com.caelum.argentum.ui.ReflectionTableModel;
 
 public class ArgentumUI {
 
 	private JFrame janela;
 	private JPanel painelPrincipal;
 	private JTable tabela;
+	private JPanel painelBotoes;
+	private JTabbedPane abas;
+	private JFormattedTextField campoDataInicio;
 
 	public static void main(String[] args) {
 		new ArgentumUI().montaTela();
@@ -30,11 +44,40 @@ public class ArgentumUI {
 	public void montaTela() {
 		montaJanela();
 		montaPainelPrincipal();
+		montaAbas();
 		montaTitulo();
 		montaTabelaComScroll();
+		montaPainelBotoes();
+		montaCampoData();
 		montaBotaoCarregar();
 		montaBotaoSair();
 		mostraJanela();
+	}
+
+	private void montaCampoData() {
+		JLabel dataLabel = new JLabel("Data de filtragem:");
+		painelBotoes.add(dataLabel);
+		try {
+			MaskFormatter mascara = new MaskFormatter("##/##/####");
+			mascara.setPlaceholderCharacter('_');
+
+			campoDataInicio = new JFormattedTextField(mascara);
+			painelBotoes.add(campoDataInicio);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void montaAbas() {
+		abas = new JTabbedPane();
+		abas.addTab("Tabela de Negócios", null);
+		abas.addTab("Gráficos", null);
+		painelPrincipal.add(abas, BorderLayout.CENTER);
+	}
+
+	private void montaPainelBotoes() {
+		painelBotoes = new JPanel(new GridLayout());
+		painelPrincipal.add(painelBotoes, BorderLayout.SOUTH);
 	}
 
 	private void montaTitulo() {
@@ -42,7 +85,7 @@ public class ArgentumUI {
 		titulo.setFont(new Font("Verdana", Font.BOLD, 25));
 		titulo.setForeground(new Color(50, 50, 100));
 		titulo.setHorizontalAlignment(SwingConstants.CENTER);
-		painelPrincipal.add(titulo);
+		painelPrincipal.add(titulo, BorderLayout.NORTH);
 	}
 
 	private void montaTabelaComScroll() {
@@ -56,7 +99,7 @@ public class ArgentumUI {
 		scroll.getViewport().add(tabela);
 		scroll.setSize(450, 450);
 
-		painelPrincipal.add(scroll);
+		abas.setComponentAt(0, scroll);
 	}
 
 	private void montaJanela() {
@@ -66,6 +109,7 @@ public class ArgentumUI {
 
 	private void montaPainelPrincipal() {
 		painelPrincipal = new JPanel();
+		painelPrincipal.setLayout(new BorderLayout());
 		janela.add(painelPrincipal);
 	}
 
@@ -75,12 +119,49 @@ public class ArgentumUI {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<Negocio> negocios = new EscolheXML().escolher();
-				NegociosTableModel ntm = new NegociosTableModel(negocios);
-				tabela.setModel(ntm);
+				carregarDados();
 			}
 		});
-		painelPrincipal.add(botaoCarregar);
+		painelBotoes.add(botaoCarregar);
+	}
+
+	private void carregarDados() {
+		List<Negocio> negocios = new EscolheXML().escolher();
+		filtrarPorData(negocios);
+		Collections.sort(negocios);
+
+		ReflectionTableModel model = new ReflectionTableModel(negocios);
+		tabela.setModel(model);
+
+		CandlestickFactory candleFactory = new CandlestickFactory();
+		List<Candle> candles = candleFactory.constroiCandles(negocios);
+		SerieTemporal serie = new SerieTemporal(candles);
+
+		GeradorDeGrafico geradorDeGrafico = new GeradorDeGrafico(serie, 2,
+				serie.getTotal() - 1);
+		geradorDeGrafico.criaGrafico("Média Movel Simples");
+		geradorDeGrafico.plotaIndicador(new MediaMovelSimples(
+				new IndicadorFechamento(), 3));
+		JPanel grafico = geradorDeGrafico.getPanel();
+		this.abas.setComponentAt(1, grafico);
+	}
+
+	private void filtrarPorData(List<Negocio> negocios) {
+		try {
+			String valor = (String) campoDataInicio.getValue();
+			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+			formato.setLenient(false);
+			Date dataInicio = formato.parse(valor);
+
+			Iterator<Negocio> it = negocios.iterator();
+			while (it.hasNext()) {
+				if (it.next().getData().getTime().before(dataInicio)) {
+					it.remove();
+				}
+			}
+		} catch (Exception e) {
+			campoDataInicio.setValue(null);
+		}
 	}
 
 	private void montaBotaoSair() {
@@ -92,7 +173,7 @@ public class ArgentumUI {
 				System.exit(0);
 			}
 		});
-		painelPrincipal.add(botaoSair);
+		painelBotoes.add(botaoSair);
 	}
 
 	private void mostraJanela() {

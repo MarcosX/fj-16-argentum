@@ -21,7 +21,8 @@ public class MediaMovelPonderadaTeste {
 	@Test
 	public void testaMediaPonderadaTresDias() {
 		SerieTemporal serie = criaSerie(1, 2, 3, 4, 5, 6);
-		MediaMovelPonderada mmp = new MediaMovelPonderada(3);
+		MediaMovelPonderada mmp = new MediaMovelPonderada(
+				new IndicadorFechamento(), 3);
 
 		Assert.assertEquals(14d / 6, mmp.calcula(2, serie), 0.0001);
 		Assert.assertEquals(20d / 6, mmp.calcula(3, serie), 0.0001);
@@ -32,22 +33,21 @@ public class MediaMovelPonderadaTeste {
 	@Test
 	public void testaMediaPonderadaCincoDias() {
 		SerieTemporal serie = criaSerie(1, 2, 3, 4, 5, 6);
-		MediaMovelPonderada mmp = new MediaMovelPonderada(5);
+		MediaMovelPonderada mmp = new MediaMovelPonderada(
+				new IndicadorFechamento(), 5);
 
-		// TODO caucular o peso total variável de acordo com o parametro
-		// TODO modificar o resultado esperado
-		Assert.assertEquals(26d / 6, mmp.calcula(4, serie), 0.0001);
-		Assert.assertEquals(32d / 6, mmp.calcula(5, serie), 0.0001);
+		Assert.assertEquals(55d / 15, mmp.calcula(4, serie), 0.0001);
+		Assert.assertEquals(70d / 15, mmp.calcula(5, serie), 0.0001);
 	}
 
+	@Test
 	public void testaMediaComAcessoInvalido() {
 		SerieTemporal serie = criaSerie(1, 2, 3, 4, 5, 6);
-		MediaMovelPonderada mmp = new MediaMovelPonderada(5);
+		MediaMovelPonderada mmp = new MediaMovelPonderada(
+				new IndicadorFechamento(), 3);
 
-		// TODO proteger ao acesso de indices fora do array
-		// TODO modificar o resultado esperado
-		Assert.assertEquals(14d / 6, mmp.calcula(2, serie), 0.0001);
-		Assert.assertEquals(20d / 6, mmp.calcula(3, serie), 0.0001);
+		Assert.assertEquals(5d / 3, mmp.calcula(1, serie), 0.0001);
+		Assert.assertEquals(1d / 1, mmp.calcula(0, serie), 0.0001);
 
 	}
 }
